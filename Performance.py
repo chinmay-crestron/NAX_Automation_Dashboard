@@ -21,6 +21,7 @@ from performance_data import (
     ALL_TEST_TYPES,
     CSV_PATH,
 )
+from jenkins_links import get_jenkins_url
 
 # ── Device buttons ────────────────────────────────────────────────────────────
 
@@ -70,6 +71,58 @@ st.markdown("""
     }
     .perf-summary .label { color: rgba(232,236,240,0.55); }
     .perf-summary .value { color: #E8ECF0; font-weight: 600; margin-left: 0.4rem; }
+
+    /* ── Jenkins execution card ───────────────────────────────────── */
+    .jenkins-card {
+        background: rgba(40, 55, 80, 0.35);
+        border: 1px solid rgba(77,163,255,0.2);
+        border-radius: 14px;
+        padding: 2.5rem 3rem;
+        margin: 1.5rem auto;
+        max-width: 680px;
+        text-align: center;
+    }
+    .jenkins-card-title {
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: #E8ECF0;
+        margin-bottom: 0.3rem;
+    }
+    .jenkins-card-subtitle {
+        color: rgba(232,236,240,0.50);
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+    }
+    .jenkins-btn-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+    .jenkins-btn {
+        display: block;
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none !important;
+        text-align: center;
+        transition: filter 0.15s, transform 0.1s;
+    }
+    .jenkins-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .jenkins-btn-active {
+        background: linear-gradient(135deg, #4DA3FF 0%, #1a6fd4 100%);
+        color: #fff !important;
+        border: none;
+    }
+    .jenkins-btn-disabled {
+        background: rgba(255,255,255,0.06);
+        color: rgba(232,236,240,0.35) !important;
+        border: 1px solid rgba(255,255,255,0.08);
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -81,6 +134,8 @@ if "perf_device" not in st.session_state:
     st.session_state.perf_device = None
 if "perf_data" not in st.session_state:
     st.session_state.perf_data = None
+if "exec_device" not in st.session_state:
+    st.session_state.exec_device = None
 
 
 def _load_data():
@@ -99,11 +154,15 @@ if st.session_state.perf_view == "landing":
     </div>
     """, unsafe_allow_html=True)
 
-    _, col_btn, _ = st.columns([2.5, 2, 2.5])
-    with col_btn:
-        if st.button("Performance Counts", type="primary", width="stretch"):
+    _, col_btn1, gap, col_btn2, _ = st.columns([2, 1.8, 0.4, 1.8, 2])
+    with col_btn1:
+        if st.button("Performance Counts", type="primary", use_container_width=True):
             _load_data()
             st.session_state.perf_view = "devices"
+            st.rerun()
+    with col_btn2:
+        if st.button("Performance Execution", type="secondary", use_container_width=True):
+            st.session_state.perf_view = "exec_devices"
             st.rerun()
 
     st.markdown("<div style='height:300px'></div>", unsafe_allow_html=True)
@@ -365,3 +424,109 @@ elif st.session_state.perf_view == "detail":
             )
         else:
             st.button("Main CSV not found", disabled=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EXECUTION — DEVICE SELECTION PAGE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+elif st.session_state.perf_view == "exec_devices":
+    if st.button("← Back", key="exec_dev_back"):
+        st.session_state.perf_view = "landing"
+        st.rerun()
+
+    st.markdown("""
+    <div class="perf-hero" style="padding-top:2rem; padding-bottom:1rem;">
+        <div class="perf-title" style="font-size:2.2rem;">Performance Execution</div>
+        <div class="perf-subtitle">Select a device to access its Jenkins execution pipelines</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    cols_per_row = 4
+    for i in range(0, len(PERF_DEVICES), cols_per_row):
+        chunk = PERF_DEVICES[i:i + cols_per_row]
+        pad = cols_per_row - len(chunk)
+        col_spec = [1.5] + [2] * len(chunk) + [2] * pad + [1.5]
+        cols = st.columns(col_spec)
+        for j, dev in enumerate(chunk):
+            with cols[j + 1]:
+                if st.button(dev, key=f"exec_dev_{dev}", use_container_width=True):
+                    st.session_state.exec_device = dev
+                    st.session_state.perf_view = "exec_jenkins"
+                    st.rerun()
+        st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='height:250px'></div>", unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EXECUTION — JENKINS BUTTONS PAGE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+elif st.session_state.perf_view == "exec_jenkins":
+    exec_device = st.session_state.exec_device or ""
+
+    if st.button("← Back to Devices", key="exec_jenkins_back"):
+        st.session_state.perf_view = "exec_devices"
+        st.rerun()
+
+    st.markdown(
+        f"""
+        <div class="perf-hero" style="padding-top:1.5rem; padding-bottom:0.5rem;">
+            <div class="perf-title" style="font-size:2rem;">
+                Access the Jenkins Execution
+            </div>
+            <div class="perf-subtitle" style="font-size:1.1rem; margin-top:0.4rem;">
+                {exec_device}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.divider()
+
+    EXEC_JOBS = [
+        "Powercycle",
+        "Network Outage",
+        "Reboot",
+        "Firmware Upgrade/Downgrade",
+    ]
+
+    # Build the 2×2 grid of Jenkins link buttons
+    job_urls = {job: get_jenkins_url("performance_execution", exec_device, job) for job in EXEC_JOBS}
+
+    btn_html = '<div class="jenkins-card"><div class="jenkins-btn-row">'
+    for job in EXEC_JOBS:
+        url = job_urls[job]
+        if url:
+            btn_html += (
+                f'<a href="{url}" target="_blank" rel="noopener noreferrer" '
+                f'class="jenkins-btn jenkins-btn-active">{job}</a>'
+            )
+        else:
+            btn_html += (
+                f'<span class="jenkins-btn jenkins-btn-disabled" '
+                f'title="URL not configured yet">{job}</span>'
+            )
+    btn_html += '</div></div>'
+
+    _, card_col, _ = st.columns([1, 4, 1])
+    with card_col:
+        st.markdown(btn_html, unsafe_allow_html=True)
+
+    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+
+    # Info note for unconfigured buttons
+    unconfigured = [j for j in EXEC_JOBS if not job_urls[j]]
+    if unconfigured:
+        _, note_col, _ = st.columns([1, 4, 1])
+        with note_col:
+            st.info(
+                f"**{len(unconfigured)} pipeline(s) not yet configured:** "
+                + ", ".join(unconfigured)
+                + "  \nAdd URLs in `scripts/jenkins_links.py` under "
+                + f'`performance_execution → {exec_device}`.'
+            )
+
+    st.markdown("<div style='height:200px'></div>", unsafe_allow_html=True)
+
