@@ -18,6 +18,8 @@ from performance_data import (
     get_test_types_for_device,
     compute_counts,
     get_total_device_count,
+    get_all_versions,
+    compute_all_device_matrix,
     ALL_TEST_TYPES,
     CSV_PATH,
 )
@@ -72,33 +74,36 @@ st.markdown("""
     .perf-summary .label { color: rgba(232,236,240,0.55); }
     .perf-summary .value { color: #E8ECF0; font-weight: 600; margin-left: 0.4rem; }
 
-    /* ── Jenkins execution card ───────────────────────────────────── */
+   /* ── Jenkins execution card ───────────────────────────────────── */
     .jenkins-card {
-        background: rgba(40, 55, 80, 0.35);
-        border: 1px solid rgba(77,163,255,0.2);
-        border-radius: 14px;
-        padding: 2.5rem 3rem;
-        margin: 1.5rem auto;
-        max-width: 680px;
-        text-align: center;
+    background: rgba(40, 55, 80, 0.35);
+    border: 1px solid rgba(77,163,255,0.2);
+    border-radius: 16px;
+    padding: 3rem 4rem;
+    margin: 2rem auto;
+    max-width: 950px;
+    text-align: center;
     }
+
     .jenkins-card-title {
-        font-size: 1.55rem;
-        font-weight: 700;
-        color: #E8ECF0;
-        margin-bottom: 0.3rem;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #E8ECF0;
+    margin-bottom: 0.5rem;
     }
+
     .jenkins-card-subtitle {
-        color: rgba(232,236,240,0.50);
-        font-size: 0.95rem;
-        margin-bottom: 2rem;
+    color: rgba(232,236,240,0.50);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
     }
+
     .jenkins-btn-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-        max-width: 520px;
-        margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.8rem;              /* Increased spacing between buttons */
+    max-width: 700px;         /* Wider button area */
+    margin: 0 auto;
     }
     .jenkins-btn {
         display: block;
@@ -150,13 +155,13 @@ if st.session_state.perf_view == "landing":
     st.markdown("""
     <div class="perf-hero">
         <div class="perf-title">DM-NAX<br><span class="perf-title-accent">Performance Testing</span></div>
-        <div class="perf-subtitle">Analyse performance test counts across devices, firmware versions, and test types.</div>
+        <div class="perf-subtitle">Access performance testing related Workflows in a Single Interface.</div>
     </div>
     """, unsafe_allow_html=True)
 
     _, col_btn1, gap, col_btn2, _ = st.columns([2, 1.8, 0.4, 1.8, 2])
     with col_btn1:
-        if st.button("Performance Counts", type="primary", use_container_width=True):
+        if st.button("Performance Counts", type="secondary", use_container_width=True):
             _load_data()
             st.session_state.perf_view = "devices"
             st.rerun()
@@ -193,13 +198,22 @@ elif st.session_state.perf_view == "devices":
         cols = st.columns(col_spec)
         for j, dev in enumerate(chunk):
             with cols[j + 1]:
-                if st.button(dev, key=f"perf_dev_{dev}", width="stretch"):
+                if st.button(dev, key=f"perf_dev_{dev}", use_container_width=True):
                     st.session_state.perf_device = dev
                     st.session_state.perf_view = "detail"
                     st.rerun()
         st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div style='height:250px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
+
+    # ── All Devices button ─────────────────────────────────────────────────
+    _, all_col, _ = st.columns([3, 2, 3])
+    with all_col:
+        if st.button("All Devices", key="perf_all_devices", use_container_width=True, type="primary"):
+            st.session_state.perf_view = "all_devices"
+            st.rerun()
+
+    st.markdown("<div style='height:200px'></div>", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -427,7 +441,177 @@ elif st.session_state.perf_view == "detail":
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# EXECUTION — DEVICE SELECTION PAGE
+# ALL DEVICES — cross-table view
+# ═══════════════════════════════════════════════════════════════════════════════
+
+elif st.session_state.perf_view == "all_devices":
+    if st.session_state.perf_data is None:
+        _load_data()
+    rows = st.session_state.perf_data
+
+    # ── Top bar ───────────────────────────────────────────────────────────
+    top1, top2, _ = st.columns([1.4, 1.4, 5])
+    with top1:
+        if st.button("← Back to Devices", key="all_dev_back"):
+            st.session_state.perf_view = "devices"
+            st.rerun()
+    with top2:
+        if st.button("Reload Counts", key="all_reload_btn"):
+            _load_data()
+            rows = st.session_state.perf_data
+            st.toast("Data reloaded from CSV.")
+            st.rerun()
+
+    st.markdown(
+        "<div style='text-align:center; padding:0.8rem 0 0.2rem;'>"
+        "<span style='font-size:2rem; font-weight:700; color:#E8ECF0;'>All Devices — Performance Counts</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.divider()
+
+    # ── Filters ───────────────────────────────────────────────────────────
+    all_versions_avail = get_all_versions(rows)
+    all_types_avail    = ALL_TEST_TYPES
+
+    default_all_ver = [all_versions_avail[0]] if all_versions_avail else []
+
+    fa1, fa2, fa3 = st.columns(3)
+    with fa1:
+        sel_all_versions = st.multiselect(
+            "Firmware Version",
+            options=all_versions_avail,
+            default=default_all_ver,
+            key="all_ver_sel",
+        )
+    with fa2:
+        sel_all_devices = st.multiselect(
+            "Device Type",
+            options=PERF_DEVICES,
+            default=PERF_DEVICES,
+            key="all_dev_sel",
+        )
+    with fa3:
+        sel_all_types = st.multiselect(
+            "Test Type",
+            options=all_types_avail,
+            default=all_types_avail,
+            key="all_type_sel",
+        )
+
+    # ── Compute matrix ────────────────────────────────────────────────────
+    matrix = compute_all_device_matrix(
+        rows,
+        versions=sel_all_versions or None,
+        devices=sel_all_devices or None,
+        test_types=sel_all_types or None,
+    )
+
+    active_devices = sel_all_devices if sel_all_devices else PERF_DEVICES
+    active_types   = sel_all_types   if sel_all_types   else ALL_TEST_TYPES
+
+    # Build DataFrame: rows = devices, columns = test types
+    table_rows = []
+    for dev in active_devices:
+        dev_counts = matrix.get(dev, {})
+        row_data = {"Device Type": dev}
+        row_total = 0
+        for tt in active_types:
+            c = dev_counts.get(tt, 0)
+            row_data[tt] = c
+            row_total += c
+        row_data["Total"] = row_total
+        table_rows.append(row_data)
+
+    # Grand-total row
+    grand = {"Device Type": "Total"}
+    for tt in active_types:
+        grand[tt] = sum(r[tt] for r in table_rows)
+    grand["Total"] = sum(r["Total"] for r in table_rows)
+    table_rows.append(grand)
+
+    df_all = pd.DataFrame(table_rows)
+
+    # ── Display ───────────────────────────────────────────────────────────
+    st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+    st.dataframe(
+        df_all,
+        hide_index=True,
+        use_container_width=True,
+        column_config={
+            "Device Type": st.column_config.TextColumn(width="medium"),
+            **{tt: st.column_config.NumberColumn(width="small") for tt in active_types},
+            "Total": st.column_config.NumberColumn(width="small"),
+        },
+    )
+
+    st.markdown("<div style='height:0.8rem'></div>", unsafe_allow_html=True)
+
+    # ── Download buttons ──────────────────────────────────────────────────
+    ver_label = "All" if (set(sel_all_versions) == set(all_versions_avail) and sel_all_versions) else (
+        ", ".join(sel_all_versions) if sel_all_versions else "None"
+    )
+
+    _, dl1, dl2, dl3, _ = st.columns([2, 1.8, 1.8, 1.8, 2])
+
+    csv_bytes_all = df_all.to_csv(index=False).encode("utf-8")
+    with dl1:
+        st.download_button(
+            "Download as CSV",
+            data=csv_bytes_all,
+            file_name="performance_all_devices.csv",
+            mime="text/csv",
+        )
+
+    # HTML/PDF
+    col_headers = "".join(f"<th>{tt}</th>" for tt in active_types) + "<th>Total</th>"
+    html_rows = ""
+    for r in table_rows:
+        cells = "".join(f"<td>{r[tt]}</td>" for tt in active_types) + f"<td>{r['Total']}</td>"
+        html_rows += f"<tr><td>{r['Device Type']}</td>{cells}</tr>"
+
+    html_all = (
+        "<html><head><title>All Devices — Performance Counts</title>"
+        "<style>"
+        "body { font-family: 'Segoe UI', Arial, sans-serif; padding: 2rem; background: #1a1a2e; color: #e8ecf0; }"
+        "h2 { color: #4DA3FF; }"
+        "table { border-collapse: collapse; width: 100%; margin-top: 1rem; }"
+        "th, td { border: 1px solid #444; padding: 9px 14px; text-align: left; }"
+        "th { background: #263040; }"
+        "tr:nth-child(even) { background: #1e2a38; }"
+        "tr:last-child { font-weight: bold; background: #263040; }"
+        ".meta { color: #aaa; margin-top: 0.5rem; }"
+        "</style></head><body>"
+        "<h2>All Devices — Performance Counts</h2>"
+        f"<p class='meta'>Firmware: {ver_label}</p>"
+        f"<table><tr><th>Device Type</th>{col_headers}</tr>"
+        f"{html_rows}"
+        "</table><script>window.onload=function(){{window.print();}}</script></body></html>"
+    )
+
+    with dl2:
+        st.download_button(
+            "Download as PDF (Print)",
+            data=html_all.encode("utf-8"),
+            file_name="performance_all_devices.html",
+            mime="text/html",
+            help="Opens HTML — use Ctrl+P → Save as PDF",
+        )
+
+    with dl3:
+        if os.path.exists(CSV_PATH):
+            with open(CSV_PATH, "rb") as csvf:
+                main_csv_bytes = csvf.read()
+            st.download_button(
+                "Download Main CSV",
+                data=main_csv_bytes,
+                file_name="document.csv",
+                mime="text/csv",
+            )
+        else:
+            st.button("Main CSV not found", disabled=True)
+
+    st.markdown("<div style='height:150px'></div>", unsafe_allow_html=True)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 elif st.session_state.perf_view == "exec_devices":

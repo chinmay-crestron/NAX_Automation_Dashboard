@@ -7,11 +7,12 @@ counts for the dashboard.
 CSV row format (comma-separated):
   timestamp, version, test_type, ip, result, device_name[, extra...]
 
-Test type normalisation:
-  FirmwareUpgradeDowngrade* → Firmware Upgrade/Downgrade
-  Network_O / Network_Outage → Network Outage
-  Reboot*                    → Reboot
-  PowerCycle                 → PowerCycle
+Test type normalisation (case-insensitive partial match):
+  contains "power"  + "cycle"         → PowerCycle
+  contains "network"                  → Network Outage
+  contains "reboot"                   → Reboot
+  contains "firmware" OR "upgrade"
+           OR "downgrade"             → Firmware Upgrade/Downgrade
 """
 
 import os
@@ -19,24 +20,27 @@ from typing import Dict, List, Optional
 
 CSV_PATH = r"C:\nax-image-server\document.csv"
 
-# ── Test-type normalisation map ───────────────────────────────────────────────
 
-CANONICAL_TYPES = {
-    "PowerCycle":   "PowerCycle",
-    "Network_O":    "Network Outage",
-    "Network_Outage": "Network Outage",
-    "Reboot":       "Reboot",
-}
-
-# Everything starting with "FirmwareUpgradeDowngrade" or "Reboot_" also maps
 def _normalise_test_type(raw: str) -> str:
-    if raw in CANONICAL_TYPES:
-        return CANONICAL_TYPES[raw]
-    if raw.startswith("FirmwareUpgradeDowngrade"):
+    """
+    Map a raw CSV test-type string to one of the four canonical names using
+    case-insensitive partial/keyword matching so minor variations in the CSV
+    (spaces, underscores, capitalisation) are all handled correctly.
+    """
+    key = raw.lower().replace("_", "").replace(" ", "").replace("/", "")
+
+    if "firmware" in key or "upgrade" in key or "downgrade" in key:
         return "Firmware Upgrade/Downgrade"
-    if raw.startswith("Reboot"):
+    if "network" in key:
+        return "Network Outage"
+    if "reboot" in key:
         return "Reboot"
-    return raw  # unknown — keep as-is
+    if "power" in key and "cycle" in key:
+        return "PowerCycle"
+    if "powercycle" in key:          # redundant safety net
+        return "PowerCycle"
+
+    return raw  # unknown variant — keep as-is so it surfaces in the UI
 
 
 # ── Ordered list for display ──────────────────────────────────────────────────
@@ -151,3 +155,36 @@ def get_total_device_count(
     if test_types:
         filtered = [r for r in filtered if r["test_type"] in test_types]
     return len({r["ip"] for r in filtered})
+
+
+def get_all_versions(rows: List[dict]) -> List[str]:
+    """Return all unique firmware versions across every device, latest first."""
+    return sorted({r["version"] for r in rows}, reverse=True)
+
+
+def compute_all_device_matrix(
+    rows: List[dict],
+    versions: Optional[List[str]] = None,
+    devices: Optional[List[str]] = None,
+    test_types: Optional[List[str]] = None,
+) -> Dict[str, Dict[str, int]]:
+    """
+    Return a nested dict  {device_name: {test_type: count}}
+    filtered by versions, devices, and test_types.
+    """
+    filtered = list(rows)
+    if versions:
+        filtered = [r for r in filtered if r["version"] in versions]
+    if devices:
+        filtered = [r for r in filtered if r["device_name"] in devices]
+    if test_types:
+        filtered = [r for r in filtered if r["test_type"] in test_types]
+
+    matrix: Dict[str, Dict[str, int]] = {}
+    for r in filtered:
+        dev = r["device_name"]
+        tt  = r["test_type"]
+        if dev not in matrix:
+            matrix[dev] = {}
+        matrix[dev][tt] = matrix[dev].get(tt, 0) + 1
+    return matrix

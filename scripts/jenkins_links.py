@@ -15,10 +15,10 @@ JENKINS_LINKS = {
     # ── Performance Execution ─────────────────────────────────────────────────
     "performance_execution": {
         "DM-NAX-8ZSA": {
-            "Powercycle":                 "",
-            "Network Outage":             "",
-            "Reboot":                     "",
-            "Firmware Upgrade/Downgrade": "",
+            "Powercycle":                 "http://nax-jenkins:8080/job/Performance/job/DM-NAX-8ZSA/job/Powercycle/",
+            "Network Outage":             "http://nax-jenkins:8080/job/Performance/job/DM-NAX-8ZSA/job/Network_Outage/",
+            "Reboot":                     "http://nax-jenkins:8080/job/Performance/job/DM-NAX-8ZSA/job/Reboot/",
+            "Firmware Upgrade/Downgrade": "http://nax-jenkins:8080/job/Performance/job/DM-NAX-8ZSA/job/Firmware_Upgrade_Downgrade/",
         },
         "DM-NAX-4ZSA": {
             "Powercycle":                 "",
