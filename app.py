@@ -3,7 +3,25 @@ NAX Automation Dashboard — Main Entry Point
 Run with: streamlit run app.py
 """
 
+import base64
+import os
 import streamlit as st
+
+# ── Load Crestron logo as base64 for the topbar ───────────────────────────────
+def _logo_b64() -> str:
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "CrestronLogo.png")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return ""
+
+_LOGO = _logo_b64()
+_BRAND_CONTENT = (
+    f'<img src="data:image/png;base64,{_LOGO}" '
+    f'alt="Crestron" '
+    f'style="height:168px; width:auto; object-fit:contain; display:block;" />'
+    if _LOGO else "&#9881;&nbsp; NAX Automation"
+)
 
 st.set_page_config(
     page_title="NAX Automation Dashboard",
@@ -22,19 +40,16 @@ reg    = st.Page("Regression.py",            title="Regression",                
 pg = st.navigation([home, config, status, perf, reg], position="hidden")
 
 # ─── Global CSS ───────────────────────────────────────────────────────────────
-st.markdown("""
+st.markdown(f"""
 <style>
     /* Remove Streamlit's default top header bar */
-    [data-testid="stHeader"]        { display: none !important; }
-    [data-testid="collapsedControl"] { display: none !important; }
+    [data-testid="stHeader"]        {{ display: none !important; }}
+    [data-testid="collapsedControl"] {{ display: none !important; }}
 
-
-
-    
-    #MainMenu                        { display: none !important; }
+    #MainMenu {{ display: none !important; }}
 
     /* Topbar */
-    .nax-topbar {
+    .nax-topbar {{
         position:        fixed;
         top:             0;
         left:            0;
@@ -48,8 +63,8 @@ st.markdown("""
         align-items:     center;
         padding:         0 2.2rem;
         z-index:         9999;
-    }
-    .nax-topbar-brand {
+    }}
+    .nax-topbar-brand {{
         font-size:      0.95rem;
         font-weight:    700;
         color:          #E8ECF0;
@@ -57,17 +72,17 @@ st.markdown("""
         letter-spacing: 0.03em;
         white-space:    nowrap;
         flex:           0 0 auto;
-    }
+    }}
     /* Nav links — absolutely centered in the topbar */
-    .nax-topbar-nav {
+    .nax-topbar-nav {{
         position:  absolute;
         left:      50%;
         transform: translateX(-50%);
         display:   flex;
         gap:       0.3rem;
         align-items: center;
-    }
-    .nax-topbar a.nav-link {
+    }}
+    .nax-topbar a.nav-link {{
         color:           rgba(232,236,240,0.78);
         text-decoration: none;
         font-size:       0.84rem;
@@ -76,22 +91,22 @@ st.markdown("""
         border-radius:   5px;
         transition:      color 0.18s, background 0.18s;
         white-space:     nowrap;
-    }
-    .nax-topbar a.nav-link:hover {
+    }}
+    .nax-topbar a.nav-link:hover {{
         color:      #ffffff;
         background: rgba(255,255,255,0.08);
-    }
+    }}
 
     /* Push page content below fixed topbar */
-    .block-container {
+    .block-container {{
         padding-top:    0 !important;
         padding-bottom: 2rem !important;
-    }
-    .topbar-spacer { height: 56px; }
+    }}
+    .topbar-spacer {{ height: 56px; }}
 </style>
 
 <div class="nax-topbar">
-    <a class="nax-topbar-brand" href="/" target="_self">&#9881;&nbsp; NAX Automation</a>
+    <a class="nax-topbar-brand" href="/" target="_self">{_BRAND_CONTENT}</a>
     <div class="nax-topbar-nav">
         <a class="nav-link" href="/"             target="_self">Home</a>
         <a class="nav-link" href="/device_config" target="_self">Device Config</a>
