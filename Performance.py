@@ -364,8 +364,6 @@ elif st.session_state.perf_view == "detail":
         {"Performance Test Type": t, "Count": counts.get(t, 0)}
         for t in display_types
     ]
-    total_count = sum(r["Count"] for r in table_data)
-    table_data.append({"Performance Test Type": "Total", "Count": total_count})
 
     df = pd.DataFrame(table_data)
 
@@ -515,20 +513,9 @@ elif st.session_state.perf_view == "all_devices":
     for dev in active_devices:
         dev_counts = matrix.get(dev, {})
         row_data = {"Device Type": dev}
-        row_total = 0
         for tt in active_types:
-            c = dev_counts.get(tt, 0)
-            row_data[tt] = c
-            row_total += c
-        row_data["Total"] = row_total
+            row_data[tt] = dev_counts.get(tt, 0)
         table_rows.append(row_data)
-
-    # Grand-total row
-    grand = {"Device Type": "Total"}
-    for tt in active_types:
-        grand[tt] = sum(r[tt] for r in table_rows)
-    grand["Total"] = sum(r["Total"] for r in table_rows)
-    table_rows.append(grand)
 
     df_all = pd.DataFrame(table_rows)
 
@@ -541,7 +528,6 @@ elif st.session_state.perf_view == "all_devices":
         column_config={
             "Device Type": st.column_config.TextColumn(width="medium"),
             **{tt: st.column_config.NumberColumn(width="small") for tt in active_types},
-            "Total": st.column_config.NumberColumn(width="small"),
         },
     )
 
@@ -564,10 +550,10 @@ elif st.session_state.perf_view == "all_devices":
         )
 
     # HTML/PDF
-    col_headers = "".join(f"<th>{tt}</th>" for tt in active_types) + "<th>Total</th>"
+    col_headers = "".join(f"<th>{tt}</th>" for tt in active_types)
     html_rows = ""
     for r in table_rows:
-        cells = "".join(f"<td>{r[tt]}</td>" for tt in active_types) + f"<td>{r['Total']}</td>"
+        cells = "".join(f"<td>{r[tt]}</td>" for tt in active_types)
         html_rows += f"<tr><td>{r['Device Type']}</td>{cells}</tr>"
 
     html_all = (

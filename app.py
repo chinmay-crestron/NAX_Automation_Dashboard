@@ -17,8 +17,9 @@ home   = st.Page("Dashboard_Home.py",      title="Home",          default=True, 
 config = st.Page("nax_device_dashboard.py", title="Device Config",              icon=":material/settings:",       url_path="device_config")
 status = st.Page("Devicestatus.py",         title="Device Status",               icon=":material/monitor_heart:",  url_path="device_status")
 perf   = st.Page("Performance.py",          title="Performance",                 icon=":material/speed:",          url_path="performance")
+reg    = st.Page("Regression.py",            title="Regression",                  icon=":material/bug_report:",     url_path="regression")
 
-pg = st.navigation([home, config, status, perf], position="hidden")
+pg = st.navigation([home, config, status, perf, reg], position="hidden")
 
 # ─── Global CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -96,6 +97,7 @@ st.markdown("""
         <a class="nav-link" href="/device_config" target="_self">Device Config</a>
         <a class="nav-link" href="/device_status" target="_self">Device Status</a>
         <a class="nav-link" href="/performance"   target="_self">Performance</a>
+        <a class="nav-link" href="/regression"    target="_self">Regression</a>
     </div>
 </div>
 <div class="topbar-spacer"></div>

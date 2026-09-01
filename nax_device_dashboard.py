@@ -70,7 +70,7 @@ EDITABLE_FIELDS = [
     "device_ip", "device_username", "device_password", "serial_number",
     "pdu_ip", "pdu_password", "power_slot", "pdu_user",
     "network_switch_ip", "network_switch_user", "network_switch_password",
-    "network_slot_rx", "inputs"
+    "network_slot_rx", "inputs", "new_firmware"
 ]
 
 # ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -495,6 +495,64 @@ if st.session_state.editing_device is not None:
                 st.rerun()
     st.stop()
 
+# ─── FIRMWARE UPDATE DIALOG ──────────────────────────────────────────────────────────────
+
+@st.dialog("Update Firmware Version", width="large")
+def fw_update_dialog(cat_key: str, model_name: str):
+    """Modal dialog for bulk-updating new_firmware across devices in a model section."""
+    devices = st.session_state.data.get(cat_key, {}).get(model_name, {})
+    device_ids = list(devices.keys())
+
+    st.markdown(
+        f"<div style='color:rgba(232,236,240,0.65); font-size:0.9rem; margin-bottom:0.9rem;'>"
+        f"<b>{model_name}</b>&nbsp;·&nbsp;{DEVICE_CATEGORIES.get(cat_key, cat_key)}</div>",
+        unsafe_allow_html=True,
+    )
+
+    # Firmware version input + Save button on the same row
+    in_col, btn_col = st.columns([5, 1])
+    with in_col:
+        new_ver = st.text_input(
+            "New firmware version",
+            placeholder="e.g. v3.2.0106.06528",
+            key=f"fw_ver_input_{cat_key}_{model_name}",
+            label_visibility="collapsed",
+        )
+    with btn_col:
+        save_clicked = st.button(
+            "Save", type="primary",
+            key=f"fw_save_{cat_key}_{model_name}",
+            width="stretch",
+        )
+
+    st.divider()
+    st.markdown("**Select devices to update:**")
+
+    # Individual device checkboxes — all selected by default
+    selected: dict = {}
+    for did in device_ids:
+        ip     = devices[did].get("device_ip", "—")
+        cur_fw = devices[did].get("new_firmware", "not set")
+        selected[did] = st.checkbox(
+            f"{did}  ·  {ip}  (current: {cur_fw})",
+            value=True,
+            key=f"fw_dev_{cat_key}_{model_name}_{did}",
+        )
+
+    # Validate & save
+    if save_clicked:
+        ver_clean = new_ver.strip()
+        if not ver_clean:
+            st.error("Please enter a firmware version.")
+        elif not any(selected.values()):
+            st.error("Select at least one device.")
+        else:
+            for did, is_sel in selected.items():
+                if is_sel:
+                    st.session_state.data[cat_key][model_name][did]["new_firmware"] = ver_clean
+            save_json(st.session_state.data)
+            st.session_state.pending_changes = True
+            st.rerun()
 
 # ─── CATEGORY DEVICE LIST ────────────────────────────────────────────────────
 if st.session_state.active_category is not None:
@@ -570,9 +628,14 @@ if st.session_state.active_category is not None:
                 st.session_state.editing_device = (row["Model"], row["Device ID"])
                 st.rerun()
 
-        if st.button(f"Add Device  —  {model_name}", key=f"add_btn_{cat_key}_{model_name}"):
-            st.session_state.adding_device = (cat_key, model_name)
-            st.rerun()
+        _ab, _space, _fwb, _ = st.columns([1, 3, 1,0.5])
+        with _ab:
+            if st.button(f"Add Device  —  {model_name}", key=f"add_btn_{cat_key}_{model_name}", width="stretch"):
+                st.session_state.adding_device = (cat_key, model_name)
+                st.rerun()
+        with _fwb:
+            if st.button("Update Firmware Version", key=f"fw_btn_{cat_key}_{model_name}", width="stretch"):
+                fw_update_dialog(cat_key, model_name)
 
         st.markdown("---")
 

@@ -1,7 +1,7 @@
 {
   "device_type": "NAX",
   "schema_version": "2.0",
-  "last_updated": "2026-08-20",
+  "last_updated": "2026-09-01",
   "common_config": {
     "device_type": "NAX",
     "consoleConfigFrmTestConfigFile": "SSH,22",
@@ -21,7 +21,7 @@
   "Regression_devices": {
     "DM-NAX-8ZSA": {
       "8ZSA_device1": {
-        "device_ip": "172.30.2.210",
+        "device_ip": "172.18.88.61",
         "serial_number": "L129357734",
         "device_username": "admin",
         "device_password": "admin123",
@@ -35,15 +35,16 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "2",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_8ZSA\\NAXLogReports",
-        "inputs": "none",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\8ZSA\\",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\8ZSA\\",
+        "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_device2": {
-        "device_ip": "172.30.2.205",
+        "device_ip": "172.18.88.62",
         "serial_number": "L129357772",
         "device_username": "admin",
         "device_password": "admin123",
@@ -57,15 +58,16 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "3",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_8ZSA\\NAXLogReports",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\8ZSA",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\8ZSA",
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_device3": {
-        "device_ip": "172.30.2.203",
+        "device_ip": "172.18.92.79",
         "serial_number": "L129357793",
         "device_username": "admin",
         "device_password": "admin123",
@@ -84,10 +86,11 @@
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_device4": {
-        "device_ip": "172.30.2.169",
+        "device_ip": "172.18.92.80",
         "serial_number": "L129357685",
         "device_username": "admin",
         "device_password": "admin123",
@@ -106,10 +109,11 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_device5": {
-        "device_ip": "172.30.2.136",
+        "device_ip": "172.18.92.91",
         "serial_number": "2045CRX00765",
         "device_username": "admin",
         "device_password": "admin123",
@@ -128,13 +132,14 @@
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_device6": {
-        "device_ip": "172.30.2.167",
+        "device_ip": "172.18.92.83",
         "device_username": "admin",
         "device_password": "admin123",
-        "serial_number": "L129335616",
+        "serial_number": "L129356008",
         "pdu_ip": "",
         "pdu_password": "",
         "power_slot": "9",
@@ -145,13 +150,50 @@
         "network_slot_rx": "9",
         "inputs": "",
         "device_name": "DM-NAX-8ZSA",
-        "status": "inactive"
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
+      },
+      "8ZSA_device7": {
+        "device_ip": "172.18.92.20",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "L133433358 ",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0121.01081",
+        "device_name": "DM-NAX-8ZSA",
+        "status": "active"
+      },
+      "8ZSA_device8": {
+        "device_ip": "172.18.92.84",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "L129335616 ",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0121.01081",
+        "device_name": "DM-NAX-8ZSA",
+        "status": "active"
       }
     },
     "DM-NAX-4ZSA": {
       "4ZSA_device1": {
-        "device_ip": "10.253.38.232",
-        "serial_number": "NAX4A-3741829056",
+        "device_ip": "172.18.92.98",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -164,17 +206,18 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\4ZSA",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\4ZSA",
         "inputs": "In-1,In-2,In-3",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0116.15086",
+        "status": "active"
       },
       "4ZSA_device2": {
-        "device_ip": "10.253.38.230",
-        "serial_number": "NAX4A-6082934715",
+        "device_ip": "172.18.88.70",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -187,17 +230,18 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\4ZSA",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\4ZSA",
         "inputs": "In-1,In-2,In-3",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "new_firmware": "v3.2.0116.15086",
+        "status": "active"
       },
       "4ZSA_device3": {
-        "device_ip": "10.253.38.226",
-        "serial_number": "NAX4A-9156203847",
+        "device_ip": "172.18.92.78",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -210,17 +254,18 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\4ZSA",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\4ZSA",
         "inputs": "In-3",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0116.15086",
         "status": "inactive"
       },
       "4ZSA_device4": {
-        "device_ip": "10.253.38.78",
-        "serial_number": "NAX4A-4723810596",
+        "device_ip": "10.253.35.95",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -233,39 +278,18 @@
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "44",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
+        "device_Logs_path": "\\\\nax-jenkins\\nax_device_logs\\Regression\\4ZSA",
+        "report_path": "\\\\nax-jenkins\\nax_logs\\Regression\\4ZSA",
         "inputs": "In-1,In-2,In-3",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "4ZSA_device5": {
-        "device_ip": "10.253.38.77",
-        "serial_number": "NAX4A-1089475362",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-4ZSA",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "",
-        "pdu_user": "",
-        "network_switch_ip": "10.253.38.65",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "41",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
-        "inputs": "In-1,In-2,In-3",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0116.15086",
         "status": "inactive"
       }
     },
     "DM-NAX-4ZSP": {
       "4ZSP_device1": {
-        "device_ip": "10.253.38.168",
+        "device_ip": "172.18.88.60",
         "serial_number": "NAX4P-7364820193",
         "device_username": "admin",
         "device_password": "admin123",
@@ -284,10 +308,11 @@
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0121.01081",
         "status": "inactive"
       },
       "4ZSP_device2": {
-        "device_ip": "10.253.35.74",
+        "device_ip": "172.18.92.69",
         "serial_number": "NAX4P-5218097436",
         "device_username": "admin",
         "device_password": "admin123",
@@ -307,10 +332,11 @@
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0121.01081",
         "status": "inactive"
       },
       "4ZSP_device3": {
-        "device_ip": "10.253.35.79",
+        "device_ip": "172.18.88.56",
         "serial_number": "NAX4P-8940362571",
         "device_username": "admin",
         "device_password": "admin123",
@@ -329,56 +355,30 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0121.01081",
         "status": "inactive"
       },
       "4ZSP_device4": {
-        "device_ip": "10.253.38.164",
-        "serial_number": "NAX4P-3107648925",
+        "device_ip": "172.18.92.61",
         "device_username": "admin",
         "device_password": "admin123",
-        "device_name": "DM-NAX-4ZSP",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "10",
-        "pdu_user": "NAX_PDU_75",
-        "network_switch_ip": "10.253.35.77",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron12345",
-        "network_slot_rx": "10",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsp_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
-        "inputs": "In-1,In-3,In-5",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "4ZSP_device5": {
-        "device_ip": "10.253.38.165",
-        "serial_number": "NAX4P-6593071284",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-4ZSP",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "13",
-        "pdu_user": "NAX_PDU_77",
-        "network_switch_ip": "10.253.35.77",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron12345",
-        "network_slot_rx": "13",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsp_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
-        "inputs": "none",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0121.01081",
+        "device_name": "DM-NAX-4ZSP"
       }
     },
     "DM-NAX-16AIN": {
       "16AIN_device1": {
-        "device_ip": "10.253.35.172",
+        "device_ip": "",
         "serial_number": "NAX16-2847391065",
         "device_username": "admin",
         "device_password": "admin123",
@@ -397,6 +397,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0106.06528",
         "status": "inactive"
       },
       "16AIN_device2": {
@@ -419,72 +420,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "16AIN_device3": {
-        "device_ip": "10.253.38.183",
-        "serial_number": "NAX16-4192057836",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-16AIN",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "10",
-        "pdu_user": "PDU_209",
-        "network_switch_ip": "10.253.38.64",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "18",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_16ain_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "report_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "inputs": "In-1,In-3,In-5",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "16AIN_device4": {
-        "device_ip": "10.253.38.170",
-        "serial_number": "NAX16-8671430259",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-16AIN",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "8",
-        "pdu_user": "NAX_PDU_72",
-        "network_switch_ip": "10.253.35.64",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "3",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_16ain_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "report_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "inputs": "In-1,In-9,In-13",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "16AIN_device5": {
-        "device_ip": "10.253.38.129",
-        "serial_number": "NAX16-3058924617",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-16AIN",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "12",
-        "pdu_user": "PDU_130",
-        "network_switch_ip": "10.253.38.87",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "11",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_16ain_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "report_path": "\\\\NJ114852DT\\NAXReports\\NAX_16AIN\\Regression",
-        "inputs": "In-1,In-9,In-13",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
+        "new_firmware": "v3.2.0106.06528",
         "status": "inactive"
       }
     },
@@ -554,50 +490,6 @@
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
         "status": "active"
-      },
-      "AMP300_device4": {
-        "device_ip": "10.253.36.104",
-        "serial_number": "NAXAP-4356170894",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-AMP300",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "8",
-        "pdu_user": "PDU_AMP02",
-        "network_switch_ip": "10.253.36.51",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "23",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_amp300_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_AMP300\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_AMP300\\NAXLogReports",
-        "inputs": "In-1,In-2",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "AMP300_device5": {
-        "device_ip": "10.253.36.105",
-        "serial_number": "NAXAP-5467281905",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-AMP300",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "9",
-        "pdu_user": "PDU_AMP03",
-        "network_switch_ip": "10.253.36.52",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "24",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_amp300_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_AMP300\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_AMP300\\NAXLogReports",
-        "inputs": "In-1,In-2",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
       }
     },
     "Edge_Devices": {
@@ -756,86 +648,20 @@
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
         "status": "inactive"
-      },
-      "Saros_device3": {
-        "device_ip": "10.253.39.103",
-        "serial_number": "NAXSR-3579124680",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "Saros",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "4",
-        "pdu_user": "PDU_SAROS02",
-        "network_switch_ip": "10.253.39.51",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "32",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_saros_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_Saros\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_Saros\\NAXLogReports",
-        "inputs": "none",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "Saros_device4": {
-        "device_ip": "10.253.39.104",
-        "serial_number": "NAXSR-4680235791",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "Saros",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "5",
-        "pdu_user": "PDU_SAROS02",
-        "network_switch_ip": "10.253.39.51",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "33",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_saros_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_Saros\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_Saros\\NAXLogReports",
-        "inputs": "In-1,In-2",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "Saros_device5": {
-        "device_ip": "10.253.39.105",
-        "serial_number": "NAXSR-5791346802",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "Saros",
-        "pdu_ip": "10.253.35.95",
-        "pdu_password": "admin123",
-        "power_slot": "6",
-        "pdu_user": "PDU_SAROS03",
-        "network_switch_ip": "10.253.39.52",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "34",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_saros_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_Saros\\Regression-1",
-        "report_path": "\\\\IND103669DT\\NAX_Saros\\NAXLogReports",
-        "inputs": "In-1,In-2",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
       }
     }
   },
   "Performance_devices": {
     "DM-NAX-8ZSA": {
       "8ZSA_Powercycle1": {
-        "device_ip": "172.30.2.43",
-        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129356343",
+        "device_ip": "172.18.88.68",
+        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357424 ",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-8ZSA",
-        "pdu_ip": "172.30.2.134",
+        "pdu_ip": "172.18.92.94",
         "pdu_password": "admin123",
-        "power_slot": "16",
+        "power_slot": "12",
         "pdu_user": "admin",
         "network_switch_ip": "10.253.38.82",
         "network_switch_user": "naxperformance",
@@ -844,17 +670,18 @@
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Performance-1",
         "inputs": "none",
-        "status": "inactive"
+        "status": "active",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Powercycle2": {
-        "device_ip": "172.30.2.211",
-        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357424 ",
+        "device_ip": "172.18.88.67",
+        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357401 ",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-8ZSA",
-        "pdu_ip": "172.30.2.134",
+        "pdu_ip": "172.18.92.94",
         "pdu_password": "admin123",
-        "power_slot": "12",
+        "power_slot": "13",
         "pdu_user": "admin",
         "network_switch_ip": "10.253.38.195",
         "network_switch_user": "naxperformance",
@@ -863,11 +690,12 @@
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Performance-1",
         "inputs": "In-1,In-3,In-5",
-        "status": "inactive"
+        "status": "active",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Powercycle3": {
-        "device_ip": "172.30.2.212",
-        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357401",
+        "device_ip": "",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-8ZSA",
@@ -882,10 +710,11 @@
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Performance-1",
         "inputs": "none",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Reboot1": {
-        "device_ip": "172.30.2.213",
+        "device_ip": "172.18.88.7",
         "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357753",
         "device_username": "admin",
         "device_password": "admin123",
@@ -901,10 +730,11 @@
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Performance-1",
         "inputs": "none",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Reboot2": {
-        "device_ip": "172.30.2.214",
+        "device_ip": "172.18.92.86",
         "serial_number": "CRESTRON-DM-NAX-8ZSA-L129355657 ",
         "device_username": "admin",
         "device_password": "admin123",
@@ -920,7 +750,8 @@
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_8zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_8ZSA\\Performance-1",
         "inputs": "In-1,In-3,In-5",
-        "status": "inactive"
+        "status": "active",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Reboot3": {
         "device_ip": "",
@@ -936,26 +767,29 @@
         "network_switch_password": "",
         "network_slot_rx": "",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "device_name": "DM-NAX-8ZSA",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Network_Outage1": {
-        "device_ip": "172.30.2.160",
+        "device_ip": "172.18.92.87",
         "device_username": "admin",
         "device_password": "admin123",
-        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357413 ",
+        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357413",
         "pdu_ip": "",
         "pdu_password": "",
         "power_slot": "",
         "pdu_user": "",
-        "network_switch_ip": "172.30.2.130",
+        "network_switch_ip": "172.18.80.100",
         "network_switch_user": "naxperformance",
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "10",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "device_name": "DM-NAX-8ZSA",
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_Network_Outage2": {
-        "device_ip": "172.30.2.162",
+        "device_ip": "172.18.92.88",
         "device_username": "admin",
         "device_password": "admin123",
         "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357608",
@@ -963,12 +797,14 @@
         "pdu_password": "",
         "power_slot": "",
         "pdu_user": "",
-        "network_switch_ip": "172.30.2.130",
+        "network_switch_ip": "172.18.80.100",
         "network_switch_user": "naxperformance",
         "network_switch_password": "Crestron1234",
         "network_slot_rx": "11",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "device_name": "DM-NAX-8ZSA",
+        "new_firmware": "v3.2.0121.01081",
+        "status": "active"
       },
       "8ZSA_Network_Outage3": {
         "device_ip": "",
@@ -984,27 +820,11 @@
         "network_switch_password": "",
         "network_slot_rx": "",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "device_name": "DM-NAX-8ZSA",
+        "new_firmware": "v3.2.0121.01081"
       },
       "8ZSA_Firmware_Upgrade_Downgrade1": {
-        "device_ip": "172.30.2.57",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129356008",
-        "pdu_ip": "",
-        "pdu_password": "",
-        "power_slot": "",
-        "pdu_user": "",
-        "network_switch_ip": "",
-        "network_switch_user": "",
-        "network_switch_password": "",
-        "network_slot_rx": "",
-        "inputs": "",
-        "device_name": "DM-NAX-8ZSA",
-        "status": "inactive"
-      },
-      "8ZSA_Firmware_Upgrade_Downgrade2": {
-        "device_ip": "172.30.2.31",
+        "device_ip": "172.18.88.64",
         "device_username": "admin",
         "device_password": "admin123",
         "serial_number": "CRESTRON-DM-NAX-8ZSA-2129CRO01740",
@@ -1017,10 +837,32 @@
         "network_switch_password": "",
         "network_slot_rx": "",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "device_name": "DM-NAX-8ZSA",
+        "new_firmware": "v3.2.0121.01081",
+        "old_firmware": "v3.1.0103.18484",
+        "status": "active"
+      },
+      "8ZSA_Firmware_Upgrade_Downgrade2": {
+        "device_ip": "172.18.92.85",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "CRESTRON-DM-NAX-8ZSA-L129357753",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0121.01081",
+        "old_firmware": "v3.1.0103.18484",
+        "device_name": "DM-NAX-8ZSA",
+        "status": "active"
       },
       "8ZSA_Firmware_Upgrade_Downgrade3": {
-        "device_ip": "172.30.2.43",
+        "device_ip": "",
         "device_username": "admin",
         "device_password": "admin123",
         "serial_number": "Crestron-DM-NAX-8ZSA-L129356343",
@@ -1033,43 +875,23 @@
         "network_switch_password": "",
         "network_slot_rx": "",
         "inputs": "",
-        "device_name": "DM-NAX-8ZSA"
+        "new_firmware": "v3.2.0121.01081",
+        "old_firmware": "v3.1.0103.18484",
+        "device_name": "DM-NAX-8ZSA",
+        "status": "inactive"
       }
     },
     "DM-NAX-4ZSA": {
-      "4ZSA_device1": {
-        "device_ip": "10.253.38.232",
-        "serial_number": "NAX4A-3741829056",
+      "4ZSA_Powercycle1": {
+        "device_ip": "172.18.88.57",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
-        "pdu_ip": "10.253.38.115",
-        "pdu_password": "admin123",
-        "power_slot": "9",
-        "pdu_user": "PDU_209",
-        "network_switch_ip": "",
-        "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "",
-        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
-        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Performance-1",
-        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
-        "inputs": "In-1,In-2,In-3",
-        "jira_assignee_id": "61f93aa58d9e3c00688e9778",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
-      },
-      "4ZSA_device2": {
-        "device_ip": "10.253.38.230",
-        "serial_number": "NAX4A-6082934715",
-        "device_username": "admin",
-        "device_password": "admin123",
-        "device_name": "DM-NAX-4ZSA",
-        "pdu_ip": "10.253.38.115",
+        "pdu_ip": "172.18.88.69",
         "pdu_password": "admin123",
         "power_slot": "12",
-        "pdu_user": "PDU_209",
+        "pdu_user": "admin",
         "network_switch_ip": "",
         "network_switch_user": "naxperformance",
         "network_switch_password": "Crestron1234",
@@ -1079,19 +901,40 @@
         "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
         "inputs": "In-1,In-2,In-3",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active",
+        "new_firmware": "v3.2.0120.21296"
       },
-      "4ZSA_device3": {
-        "device_ip": "10.253.38.226",
-        "serial_number": "NAX4A-9156203847",
+      "4ZSA_Powercycle2": {
+        "device_ip": "172.18.92.77",
+        "serial_number": "",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "device_name": "DM-NAX-4ZSA",
+        "pdu_ip": "172.18.88.69",
+        "pdu_password": "admin123",
+        "power_slot": "10",
+        "pdu_user": "admin",
+        "network_switch_ip": "",
+        "network_switch_user": "naxperformance",
+        "network_switch_password": "Crestron1234",
+        "network_slot_rx": "",
+        "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
+        "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Performance-1",
+        "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
+        "inputs": "In-1,In-2,In-3",
+        "jira_assignee_id": "61f93aa58d9e3c00688e9778",
+        "status": "active",
+        "new_firmware": "v3.2.0120.21296"
+      },
+      "4ZSA_Firmware_Upgrade_Downgrade1": {
+        "device_ip": "172.18.92.99",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
         "pdu_ip": "10.253.38.115",
         "pdu_password": "admin123",
-        "power_slot": "47",
+        "power_slot": "00",
         "pdu_user": "PDu_224",
         "network_switch_ip": "",
         "network_switch_user": "naxperformance",
@@ -1102,13 +945,31 @@
         "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
         "inputs": "In-3",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "old_firmware": "v3.1.0103.18484",
+        "new_firmware": "v3.2.0120.21296"
       },
-      "4ZSA_device4": {
-        "device_ip": "10.253.38.78",
-        "serial_number": "NAX4A-4723810596",
+      "4ZSA_Firmware_Upgrade_Downgrade2": {
+        "device_ip": "172.18.92.97",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0120.21296",
+        "old_firmware": "v3.1.0103.18484",
+        "device_name": "DM-NAX-4ZSA"
+      },
+      "4ZSA_Network_Outage1": {
+        "device_ip": "172.18.88.59",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -1116,21 +977,20 @@
         "pdu_password": "admin123",
         "power_slot": "",
         "pdu_user": "34",
-        "network_switch_ip": "10.253.38.65",
+        "network_switch_ip": "172.18.92.100",
         "network_switch_user": "naxperformance",
-        "network_switch_password": "Crestron1234",
-        "network_slot_rx": "44",
+        "network_switch_password": "Crestron123",
+        "network_slot_rx": "17",
         "key_map_file": "src\\Testdata\\XRay\\xray_test_key_map_4zsa_regression.json",
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
         "inputs": "In-1,In-2,In-3",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0120.21296"
       },
-      "4ZSA_device5": {
-        "device_ip": "10.253.38.77",
-        "serial_number": "NAX4A-1089475362",
+      "4ZSA_Network_Outage2": {
+        "device_ip": "",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSA",
@@ -1146,22 +1006,55 @@
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSA\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSA\\NAXLogReports",
         "inputs": "In-1,In-2,In-3",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0120.21296"
+      },
+      "4ZSA_Reboot1": {
+        "device_ip": "172.18.92.76",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0120.21296",
+        "device_name": "DM-NAX-4ZSA"
+      },
+      "4ZSA_Reboot2": {
+        "device_ip": "",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0120.21296",
+        "device_name": "DM-NAX-4ZSA"
       }
     },
     "DM-NAX-4ZSP": {
-      "4ZSP_device1": {
-        "device_ip": "10.253.38.168",
-        "serial_number": "NAX4P-7364820193",
+      "4ZSP_Powercycle1": {
+        "device_ip": "172.18.92.61",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSP",
-        "pdu_ip": "10.253.35.95",
+        "pdu_ip": "172.18.88.69",
         "pdu_password": "admin123",
-        "power_slot": "0",
-        "pdu_user": "NAX_PDU_",
+        "power_slot": "15",
+        "pdu_user": "admin",
         "network_switch_ip": "",
         "network_switch_user": "naxperformance",
         "network_switch_password": "Crestron1234",
@@ -1170,20 +1063,19 @@
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
         "inputs": "In-1,In-3,In-5",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0116.17528"
       },
-      "4ZSP_device2": {
-        "device_ip": "10.253.35.74",
-        "serial_number": "NAX4P-5218097436",
+      "4ZSP_Powercycle2": {
+        "device_ip": "172.18.88.60",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSP",
-        "pdu_ip": "10.253.35.95",
+        "pdu_ip": "172.18.88.69",
         "pdu_password": "admin123",
-        "power_slot": "2",
-        "pdu_user": "NAX_PDU_75",
+        "power_slot": "7",
+        "pdu_user": "admin",
         "network_switch_ip": "10.253.35.77",
         "network_switch_user": "naxperformance",
         "network_switch_password": "Crestron12345",
@@ -1193,13 +1085,12 @@
         "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
         "inputs": "none",
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0116.17528"
       },
-      "4ZSP_device3": {
-        "device_ip": "10.253.35.79",
-        "serial_number": "NAX4P-8940362571",
+      "4ZSP_Reboot1": {
+        "device_ip": "172.18.88.56",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSP",
@@ -1215,13 +1106,12 @@
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
         "inputs": "none",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0116.17528"
       },
-      "4ZSP_device4": {
-        "device_ip": "10.253.38.164",
-        "serial_number": "NAX4P-3107648925",
+      "4ZSP_Reboot2": {
+        "device_ip": "",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSP",
@@ -1237,13 +1127,12 @@
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
         "inputs": "In-1,In-3,In-5",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "new_firmware": "v3.2.0116.17528"
       },
-      "4ZSP_device5": {
-        "device_ip": "10.253.38.165",
-        "serial_number": "NAX4P-6593071284",
+      "4ZSP_Firmware_Upgrade_Downgrade2": {
+        "device_ip": "",
+        "serial_number": "",
         "device_username": "admin",
         "device_password": "admin123",
         "device_name": "DM-NAX-4ZSP",
@@ -1259,9 +1148,61 @@
         "device_Logs_path": "\\\\NJ114852DT\\NAXReports\\NAX_4ZSP\\Performance-1",
         "report_path": "\\\\IND103669DT\\NAX_4ZSP\\NAXLogReports",
         "inputs": "none",
-        "mail_recipients": "chinmay.naik@crestron.com",
-        "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "inactive",
+        "old_firmware": "v3.1.0103.18484",
+        "new_firmware": "v3.2.0116.17528"
+      },
+      "4ZSP_Firmware_Upgrade_Downgrade1": {
+        "device_ip": "172.18.92.75",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0116.17528",
+        "old_firmware": "v3.1.0103.18484",
+        "device_name": "DM-NAX-4ZSP"
+      },
+      "4ZSP_Network_Outage1": {
+        "device_ip": "172.18.92.69",
+        "device_username": "admin",
+        "device_password": "admin123",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "172.18.92.100",
+        "network_switch_user": "naxperformance",
+        "network_switch_password": "Crestron123",
+        "network_slot_rx": "23",
+        "inputs": "",
+        "new_firmware": "v3.2.0116.17528",
+        "device_name": "DM-NAX-4ZSP"
+      },
+      "4ZSP_Network_Outage2": {
+        "device_ip": "",
+        "device_username": "",
+        "device_password": "",
+        "serial_number": "",
+        "pdu_ip": "",
+        "pdu_password": "",
+        "power_slot": "",
+        "pdu_user": "",
+        "network_switch_ip": "",
+        "network_switch_user": "",
+        "network_switch_password": "",
+        "network_slot_rx": "",
+        "inputs": "",
+        "new_firmware": "v3.2.0116.17528",
+        "device_name": "DM-NAX-4ZSP"
       }
     },
     "DM-NAX-16AIN": {
@@ -1735,7 +1676,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       }
     },
     "DM-NAX-4ZSA": {
@@ -1760,7 +1701,7 @@
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       }
     },
     "DM-NAX-4ZSP": {
@@ -1994,7 +1935,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "8ZSA_device2": {
         "device_ip": "10.253.38.167",
@@ -2016,7 +1957,7 @@
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "8ZSA_device3": {
         "device_ip": "10.253.38.175",
@@ -2038,7 +1979,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "8ZSA_device4": {
         "device_ip": "10.253.38.107",
@@ -2060,7 +2001,7 @@
         "inputs": "none",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "8ZSA_device5": {
         "device_ip": "10.253.38.98",
@@ -2082,7 +2023,7 @@
         "inputs": "In-1,In-3,In-5",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       }
     },
     "DM-NAX-4ZSA": {
@@ -2107,7 +2048,7 @@
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "4ZSA_device2": {
         "device_ip": "10.253.38.230",
@@ -2130,7 +2071,7 @@
         "jira_assignee_id": "61f93aa58d9e3c00688e9778",
         "mail_recipients": "chinmay.naik@crestron.com",
         "execution_admin": "chinmay.naik@crestron.com",
-        "status": "inactive"
+        "status": "active"
       },
       "4ZSA_device3": {
         "device_ip": "10.253.38.226",

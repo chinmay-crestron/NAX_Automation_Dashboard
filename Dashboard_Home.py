@@ -124,8 +124,8 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Centered action buttons
-_, btn_col1, gap1, btn_col2, gap2, btn_col3, _ = st.columns([2.2, 1.6, 0.2, 1.6, 0.2, 1.6, 2.2])
+# Centered action buttons — row 1: Device Config + Device Status
+_, btn_col1, gap1, btn_col2, _ = st.columns([2.6, 1.6, 0.2, 1.6, 2.6])
 
 with btn_col1:
     if st.button("View Device Config", type="primary", width='stretch'):
@@ -135,7 +135,16 @@ with btn_col2:
     if st.button("Check Device Status", width='stretch'):
         st.switch_page("Devicestatus.py")
 
+st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
+# Row 2: Performance + Regression
+_, btn_col3, gap2, btn_col4, _ = st.columns([2.6, 1.6, 0.2, 1.6, 2.6])
+
 with btn_col3:
     if st.button("Performance", width='stretch'):
         st.switch_page("Performance.py")
+
+with btn_col4:
+    if st.button("Regression", width='stretch'):
+        st.switch_page("Regression.py")
 

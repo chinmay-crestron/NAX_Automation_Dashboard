@@ -57,6 +57,31 @@ JENKINS_LINKS = {
             "Firmware Upgrade/Downgrade": "",
         },
     },
+
+    # ── Regression Execution ──────────────────────────────────────────────────
+    "regression_execution": {
+        "DM-NAX-8ZSA": {
+            "Regression": "http://nax-jenkins:8080/job/8ZSA_Pipeline/",
+        },
+        "DM-NAX-4ZSA": {
+            "Regression": "http://nax-jenkins:8080/job/4ZSA_Pipeline/",
+        },
+        "DM-NAX-4ZSP": {
+            "Regression": "http://nax-jenkins:8080/job/4ZSP_Pipeline/",
+        },
+        "DM-NAX-16AIN": {
+            "Regression": "http://nax-jenkins:8080/job/16AIN_Pipeline/",
+        },
+        "DM-NAX-AMP300": {
+            "Regression": "",
+        },
+        "Edge-Devices": {
+            "Regression": "",
+        },
+        "Saros": {
+            "Regression": "",
+        },
+    },
 }
 
 # ── Helper ────────────────────────────────────────────────────────────────────
