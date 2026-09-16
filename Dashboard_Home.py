@@ -148,3 +148,12 @@ with btn_col4:
     if st.button("Regression", width='stretch'):
         st.switch_page("Regression.py")
 
+st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
+
+# Row 3: Longevity
+_, btn_col5, _ = st.columns([3.5, 1.6, 3.5])
+
+with btn_col5:
+    if st.button("Longevity", width='stretch'):
+        st.switch_page("Longevity.py")
+

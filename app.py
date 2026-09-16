@@ -36,8 +36,9 @@ config = st.Page("nax_device_dashboard.py", title="Device Config",              
 status = st.Page("Devicestatus.py",         title="Device Status",               icon=":material/monitor_heart:",  url_path="device_status")
 perf   = st.Page("Performance.py",          title="Performance",                 icon=":material/speed:",          url_path="performance")
 reg    = st.Page("Regression.py",            title="Regression",                  icon=":material/bug_report:",     url_path="regression")
+long   = st.Page("Longevity.py",             title="Longevity",                   icon=":material/timeline:",       url_path="longevity")
 
-pg = st.navigation([home, config, status, perf, reg], position="hidden")
+pg = st.navigation([home, config, status, perf, reg, long], position="hidden")
 
 # ─── Global CSS ───────────────────────────────────────────────────────────────
 st.markdown(f"""
@@ -113,6 +114,7 @@ st.markdown(f"""
         <a class="nav-link" href="/device_status" target="_self">Device Status</a>
         <a class="nav-link" href="/performance"   target="_self">Performance</a>
         <a class="nav-link" href="/regression"    target="_self">Regression</a>
+        <a class="nav-link" href="/longevity"     target="_self">Longevity</a>
     </div>
 </div>
 <div class="topbar-spacer"></div>
