@@ -57,7 +57,7 @@ CSV_COLUMNS = [
 
 DEFAULT_CSV_PATH = os.getenv("NAX_LONGEVITY_CSV", r"C:\runData_BTIO\event.csv")
 DEFAULT_DASHBOARD_URL = os.getenv(
-    "NAX_LONGEVITY_DASHBOARD_URL", "http://10.253.36.122:8501/longevity"
+    "NAX_LONGEVITY_DASHBOARD_URL", "http://172.18.88.51:8501/longevity"
 )
 DEFAULT_SUBJECT = "NAX Edge Devices Longevity Health Status"
 
@@ -70,7 +70,7 @@ SMTP_PORT = int(os.getenv("NAX_SMTP_PORT", "587"))
 SMTP_USER = os.getenv("NAX_SMTP_USER", "qeauto@crestron.com")
 # Prefer supplying the password through NAX_SMTP_PASSWORD (Jenkins credential
 # binding) instead of relying on the framework default below.
-SMTP_PASSWORD = os.getenv("NAX_SMTP_PASSWORD", "G#614609743222ah")
+SMTP_PASSWORD = os.getenv("NAX_SMTP_PASSWORD", "uzxzdeGFQPy#Q9C")
 SENDER_NAME = "NAX Automation"
 
 NA = "N/A"
