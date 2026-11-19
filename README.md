@@ -12,7 +12,7 @@ performance, regression and longevity monitoring.
 | Python 3.10+ | Same version used to build the original `.venv` (3.10.x recommended). |
 | Git | To clone/update the repo. |
 | Network access | To the NAX devices (SSH/22) and, for Longevity email, to `smtp.office365.com:587`. |
-| `Nax_Devices.json` | Device config source of truth. Either use the path baked into `nax_config.py` (`C:\NAX-FRAMEWORK\DM_NAX\src\TestData\Nax_Devices.json`) or point `NAX_JSON_PATH` at your copy (see §4). |
+| `Nax_Devices.json` | Device config source of truth. Either use the path baked into `nax_config.py` (`C:\NAX-FRAMEWORK-U20\DM_NAX\src\TestData\Nax_Devices.json`) or point `NAX_JSON_PATH` at your copy (see §4). |
 
 ---
 
@@ -57,7 +57,7 @@ variables (set them **before** launching Streamlit, e.g. via PowerShell
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `NAX_JSON_PATH` | Path to `Nax_Devices.json` | `C:\NAX-FRAMEWORK\DM_NAX\src\TestData\Nax_Devices.json` (falls back to the repo's own `Nax_Devices.json`) |
+| `NAX_JSON_PATH` | Path to `Nax_Devices.json` (takes priority over the default) | `C:\NAX-FRAMEWORK-U20\DM_NAX\src\TestData\Nax_Devices.json` (falls back to the repo's own `Nax_Devices.json`) |
 | `NAX_LONGEVITY_CSV` | Path to the Longevity event CSV read by the dashboard | `C:\runData_BTIO\event.csv` |
 
 If neither the preferred path nor the env var exists, the app falls back to the
@@ -112,7 +112,32 @@ together if you deploy the collector to a different location (e.g.
 
 ---
 
-## 7. Troubleshooting
+## 7. Switching to a different framework branch
+
+Device details come from `Nax_Devices.json` inside a local checkout of the NAX
+framework SVN branch (currently `NAX_u20`, checked out at `C:\NAX-FRAMEWORK-U20`).
+To move the dashboard to another branch (e.g. `NAX_u22`):
+
+1. Check out the new branch locally, e.g.
+   `svn checkout "svn://linux2/subversion/QE/Enterprise Software Automation/branches/NAX_u22" C:\NAX-FRAMEWORK-U22`
+   and make sure its `DM_NAX\src\TestData\Nax_Devices.json` is up to date.
+2. Update the path in these two places (search for `NAX-FRAMEWORK`):
+   - `nax_config.py` → `preferred_path` in `resolve_json_path()` and `SVN_URL`
+     (`SVN_URL` is shown in the UI; the commit itself goes to wherever the
+     working copy of `Nax_Devices.json` points).
+   - `Longevity/backend/main_nax.py` → the path in `resolve_json_path()`.
+3. Update the paths in this README (§1 and §4).
+4. Restart Streamlit. Every machine running the Longevity collector needs the
+   updated `main_nax.py` (or the `NAX_JSON_PATH` variable / `--json` flag).
+
+No code change is needed for a quick/temporary switch: set `NAX_JSON_PATH` to the
+new file (it takes priority over the built-in default), e.g.
+`$env:NAX_JSON_PATH="C:\NAX-FRAMEWORK-U22\DM_NAX\src\TestData\Nax_Devices.json"`,
+or pass `--json <path>` to `main_nax.py`.
+
+---
+
+## 8. Troubleshooting
 
 | Symptom | Fix |
 |---|---|

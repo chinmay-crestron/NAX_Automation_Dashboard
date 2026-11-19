@@ -2,16 +2,21 @@
 Longevity data helpers
 ======================
 Loads the device-health CSV produced by Longevity/backend/main_nax.py and
-maps device IPs to friendly device names using the Longevity_devices section
-of Nax_Devices.json.
+groups records per Longevity device (Nax_Devices.json device ID), so a device
+keeps a single history even when its IP changes.
 
 CSV layout (see nax_config.LONGEVITY_CSV_COLUMNS):
     Timestamp,IP,Model,Uptime (Days),RAM Usage (%),User CPU (%),System CPU (%),
-    Nice CPU (%),Idle CPU (%),IO CPU (%),IRQ CPU (%),SIRQ CPU (%)
+    Nice CPU (%),Idle CPU (%),IO CPU (%),IRQ CPU (%),SIRQ CPU (%),Device ID
+
+Device resolution per row: saved Device ID -> current IP in the JSON ->
+model reported by that IP (first device of the matching model section) ->
+the IP itself.
 """
 
 import json
 import os
+import re
 
 import pandas as pd
 
@@ -20,7 +25,7 @@ from nax_config import JSON_PATH, LONGEVITY_CSV_PATH, LONGEVITY_CSV_COLUMNS
 CSV_PATH = LONGEVITY_CSV_PATH
 CSV_COLUMNS = LONGEVITY_CSV_COLUMNS
 
-ALL_DEVICES_LABEL = "All Devices"
+DEFAULT_FAMILY = "DM-NAX-8ZSA"
 
 NUMERIC_COLUMNS = [
     "Uptime (Days)",
@@ -34,41 +39,139 @@ NUMERIC_COLUMNS = [
     "SIRQ CPU (%)",
 ]
 
-CPU_BREAKDOWN_COLUMNS = [
-    "User CPU (%)",
-    "System CPU (%)",
-    "Nice CPU (%)",
-    "IO CPU (%)",
-    "IRQ CPU (%)",
-    "SIRQ CPU (%)",
-]
-
 _SHORT_DATE_RE = r"^\d{1,2}-\d{1,2}$"
+_ORPHAN_PREFIX = "ip:"
 
 
-# ── Device name lookup ────────────────────────────────────────────────────────
+def _natural_key(text) -> list:
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", str(text))]
 
-def load_longevity_device_map(json_path: str = JSON_PATH) -> dict:
-    """Return {device_ip: device_name} for every non-empty Longevity device IP."""
+
+def _is_edge(family: str) -> bool:
+    return "edge" in family.lower()
+
+
+def _valid_model(model) -> bool:
+    text = str(model).strip()
+    return bool(text) and text.lower() not in ("unknown", "nan", "none")
+
+
+# ── Device config ───── ────────────────────────────────────────────────────────
+
+def load_longevity_config(json_path: str = JSON_PATH) -> list:
+    """Ordered [{'key', 'family', 'device_id', 'ip'}] for every Longevity device.
+
+    'key' matches the Device ID written by main_nax.py ("<family>/<device id>").
+    """
     try:
         with open(json_path, "r") as f:
             data = json.load(f)
     except (OSError, ValueError):
-        return {}
+        return []
 
-    ip_to_name = {}
-    for model_name, devices in (data.get("Longevity_devices") or {}).items():
-        if not isinstance(devices, dict):
+    devices = []
+    for family, entries in (data.get("Longevity_devices") or {}).items():
+        if not isinstance(entries, dict):
             continue
-        for device_id, cfg in devices.items():
-            if not isinstance(cfg, dict):
-                continue
-            ip = str(cfg.get("device_ip", "")).strip()
-            if not ip:
-                continue
-            name = str(cfg.get("device_name", "")).strip() or str(model_name).strip()
-            ip_to_name[ip] = name or ip
-    return ip_to_name
+        device_ids = sorted((k for k, v in entries.items() if isinstance(v, dict)), key=_natural_key)
+        for device_id in device_ids:
+            devices.append({
+                "key": f"{family}/{device_id}",
+                "family": str(family),
+                "device_id": str(device_id),
+                "ip": str(entries[device_id].get("device_ip", "")).strip(),
+            })
+    return devices
+
+
+def _family_for_model(model: str, families: list) -> str:
+    """Non-edge model section matching a reported model, e.g. DM-NAX-4ZSA-50 -> DM-NAX-4ZSA."""
+    model = str(model).strip().upper()
+    for family in sorted(families, key=len, reverse=True):
+        if _is_edge(family):
+            continue
+        fam = family.upper()
+        if model == fam or model.startswith(fam + "-"):
+            return family
+    return ""
+
+
+def _assign_device_keys(df: pd.DataFrame, config: list) -> pd.Series:
+    families = list(dict.fromkeys(d["family"] for d in config))
+    ip_to_key = {d["ip"]: d["key"] for d in config if d["ip"]}
+    first_key = {}
+    for d in config:
+        first_key.setdefault(d["family"], d["key"])
+    ip_model = df[df["Model"].map(_valid_model)].groupby("IP")["Model"].last().to_dict()
+
+    def _key(saved: str, ip: str) -> str:
+        if saved:
+            return saved
+        if ip in ip_to_key:
+            return ip_to_key[ip]
+        family = _family_for_model(ip_model.get(ip, ""), families)
+        if family:
+            return first_key[family]
+        return _ORPHAN_PREFIX + ip
+
+    saved_ids = df["Device ID"].fillna("").astype(str).str.strip().replace("nan", "")
+    return pd.Series([_key(s, ip) for s, ip in zip(saved_ids, df["IP"])], index=df.index)
+
+
+def _device_labels(df: pd.DataFrame, config: list) -> tuple[dict, dict]:
+    """Return ({key: label}, {key: sort order}).
+
+    Model sections: "DM-NAX-8ZSA", then "DM-NAX-8ZSA 2", "... 3" for extra device IDs.
+    Edge devices: model reported by the device, with the IP only when the model repeats.
+    """
+    families = list(dict.fromkeys(d["family"] for d in config))
+    config_ip = {d["key"]: d["ip"] for d in config}
+    keys = list(df["Device Key"].unique())
+
+    ordered = df.sort_values("Date")
+    key_model = ordered[ordered["Model"].map(_valid_model)].groupby("Device Key")["Model"].last().to_dict()
+    key_ip = ordered.groupby("Device Key")["IP"].last().to_dict()
+
+    # Device IDs saved in the CSV but since removed from the JSON go after the configured ones.
+    family_members = {f: [d["key"] for d in config if d["family"] == f] for f in families}
+    for key in sorted(keys, key=_natural_key):
+        if key.startswith(_ORPHAN_PREFIX):
+            continue
+        family = key.split("/", 1)[0]
+        if family not in families:
+            families.append(family)
+        members = family_members.setdefault(family, [])
+        if key not in members:
+            members.append(key)
+
+    labels, sort_keys, pooled = {}, {}, {}
+    for key in keys:
+        if key.startswith(_ORPHAN_PREFIX):
+            family, rank = "", len(families)
+        else:
+            family = key.split("/", 1)[0]
+            rank = families.index(family)
+
+        if family and not _is_edge(family):
+            pos = family_members[family].index(key) + 1
+            labels[key] = family if pos == 1 else f"{family} {pos}"
+            sort_keys[key] = (rank, [pos])
+        else:
+            fallback = key.split("/", 1)[1] if family else key[len(_ORPHAN_PREFIX):]
+            base = key_model.get(key) or fallback
+            pooled.setdefault(base, []).append(key)
+            labels[key] = base
+            sort_keys[key] = (rank, _natural_key(base))
+
+    for base, members in pooled.items():
+        if len(members) > 1:
+            for key in members:
+                ip = config_ip.get(key) or key_ip.get(key, "")
+                labels[key] = f"{base} ({ip})"
+                sort_keys[key] = (sort_keys[key][0], _natural_key(labels[key]))
+
+    order = {key: i for i, key in enumerate(sorted(keys, key=lambda k: sort_keys[k]))}
+    return labels, order
 
 
 # ── CSV loading ───────────────────────────────────────────────────────────────
@@ -110,11 +213,13 @@ def _parse_dates(raw: pd.Series) -> pd.Series:
 def load_longevity_data(csv_path: str = CSV_PATH) -> pd.DataFrame:
     """Read the event CSV into a cleaned DataFrame.
 
-    Adds: Date (datetime), Date Label (str), Device (friendly name),
-    CPU Busy (%), Record (per-device sequence index).
+    Adds: Date (datetime), Date Label (str), Device Key (device identity),
+    Device (display label), Device Order, CPU Busy (%), Record (per-device index).
     Returns an empty DataFrame when the CSV is missing or unreadable.
     """
-    empty = pd.DataFrame(columns=CSV_COLUMNS + ["Date", "Date Label", "Device", "CPU Busy (%)"])
+    empty = pd.DataFrame(columns=CSV_COLUMNS + [
+        "Date", "Date Label", "Device Key", "Device", "Device Order", "CPU Busy (%)",
+    ])
 
     if not csv_path or not os.path.exists(csv_path):
         return empty
@@ -151,55 +256,40 @@ def load_longevity_data(csv_path: str = CSV_PATH) -> pd.DataFrame:
 
     df["Date Label"] = df["Date"].dt.strftime("%d %b")
 
-    # Friendly device name: JSON config first, CSV model next, IP last.
-    ip_to_name = load_longevity_device_map()
-    csv_model = (
-        df[df["Model"].ne("") & df["Model"].str.lower().ne("unknown")]
-        .groupby("IP")["Model"]
-        .last()
-        .to_dict()
-    )
-
-    def _device_name(ip):
-        return ip_to_name.get(ip) or csv_model.get(ip) or ip
-
-    df["Device"] = df["IP"].map(_device_name)
+    config = load_longevity_config()
+    df["Device Key"] = _assign_device_keys(df, config)
+    labels, order = _device_labels(df, config)
+    df["Device"] = df["Device Key"].map(labels)
+    df["Device Order"] = df["Device Key"].map(order)
 
     idle = df["Idle CPU (%)"]
     df["CPU Busy (%)"] = (100 - idle).clip(lower=0, upper=100)
 
-    df = df.sort_values(["Date", "IP"]).reset_index(drop=True)
-    df["Record"] = df.groupby("IP").cumcount() + 1
+    df = df.sort_values(["Date", "Device Order", "IP"]).reset_index(drop=True)
+    df["Record"] = df.groupby("Device Key").cumcount() + 1
     return df
 
 
 # ── Selection helpers ─────────────────────────────────────────────────────────
 
 def build_device_options(df: pd.DataFrame) -> list:
-    """Return [(label, ip)] for every device present in the data.
-
-    Labels use the device name; the IP is appended only when a name is shared
-    by more than one device so entries stay unambiguous.
-    """
+    """Return [(label, device key)] for every device present in the data, in display order."""
     if df.empty:
         return []
-
-    pairs = (
-        df[["IP", "Device"]]
-        .drop_duplicates()
-        .sort_values(["Device", "IP"])
-        .to_records(index=False)
+    devices = (
+        df[["Device Key", "Device", "Device Order"]]
+        .drop_duplicates("Device Key")
+        .sort_values("Device Order")
     )
+    return [(str(label), str(key)) for key, label in zip(devices["Device Key"], devices["Device"])]
 
-    name_counts = {}
-    for _, name in pairs:
-        name_counts[name] = name_counts.get(name, 0) + 1
 
-    options = []
-    for ip, name in pairs:
-        label = f"{name} ({ip})" if name_counts.get(name, 0) > 1 else str(name)
-        options.append((label, str(ip)))
-    return options
+def default_device_index(options: list) -> int:
+    """Index of the first DM-NAX-8ZSA device, else 0."""
+    for i, (_, key) in enumerate(options):
+        if key.split("/", 1)[0] == DEFAULT_FAMILY:
+            return i
+    return 0
 
 
 def filter_by_days(df: pd.DataFrame, days: int | None) -> pd.DataFrame:
@@ -210,29 +300,7 @@ def filter_by_days(df: pd.DataFrame, days: int | None) -> pd.DataFrame:
     return df[df["Date"].isin(latest_dates)].copy()
 
 
-def latest_snapshot(df: pd.DataFrame) -> pd.DataFrame:
-    """Most recent record per device."""
-    if df.empty:
-        return df
-    snapshot = (
-        df.sort_values("Date")
-        .groupby("IP", as_index=False)
-        .tail(1)
-        .sort_values("Device")
-        .reset_index(drop=True)
-    )
-    return snapshot
-
-
-def cpu_breakdown_long(df: pd.DataFrame) -> pd.DataFrame:
-    """Melt CPU columns into long form for a multi-series chart."""
-    if df.empty:
-        return pd.DataFrame(columns=["Date", "Date Label", "Metric", "Value"])
-    melted = df.melt(
-        id_vars=["Date", "Date Label"],
-        value_vars=CPU_BREAKDOWN_COLUMNS,
-        var_name="Metric",
-        value_name="Value",
-    ).dropna(subset=["Value"])
-    melted["Metric"] = melted["Metric"].str.replace(r"\s*CPU \(%\)$", "", regex=True)
-    return melted
+def latest_model(df: pd.DataFrame) -> str:
+    """Most recent model the device reported, ignoring failed collections."""
+    models = df.loc[df["Model"].map(_valid_model), "Model"]
+    return str(models.iloc[-1]) if not models.empty else "Unknown"

@@ -4,12 +4,12 @@ import os
 
 def resolve_json_path():
     base_dir = os.path.dirname(__file__)
-    preferred_path = r"C:\NAX-FRAMEWORK\DM_NAX\src\TestData\Nax_Devices.json"
+    preferred_path = r"C:\NAX-FRAMEWORK-U20\DM_NAX\src\TestData\Nax_Devices.json"
     env_path = os.getenv("NAX_JSON_PATH")
     local_path = os.path.join(base_dir, "Nax_Devices.json")
     legacy_path = os.path.join(base_dir, "..", "..", "TestData", "Nax_Devices.json")
 
-    for candidate in [preferred_path, env_path, local_path, legacy_path]:
+    for candidate in [env_path, preferred_path, local_path, legacy_path]:
         if candidate and os.path.exists(candidate):
             return os.path.normpath(candidate)
 
@@ -59,9 +59,10 @@ LONGEVITY_CSV_COLUMNS = [
     "IO CPU (%)",
     "IRQ CPU (%)",
     "SIRQ CPU (%)",
+    "Device ID",
 ]
 
-SVN_URL = "svn://linux2/subversion/QE/Enterprise Software Automation/branches/NAX_u16"
+SVN_URL = "svn://linux2/subversion/QE/Enterprise Software Automation/branches/NAX_u20"
 SVN_USER = os.getenv("NAX_SVN_USER", "chinmay.naik")
 SVN_PASS = os.getenv("NAX_SVN_PASS", "chinmay.naik031728")
 SVN_BIN = os.getenv("NAX_SVN_BIN")

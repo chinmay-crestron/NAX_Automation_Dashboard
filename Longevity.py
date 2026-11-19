@@ -4,7 +4,8 @@ Longevity Testing Page
 Visualises long-run device health data collected by
 Longevity/backend/main_nax.py and stored in the event CSV.
 
-Device names (not IPs) are listed in the selector; "All Devices" is default.
+Device names (not IPs) are listed in the selector; DM-NAX-8ZSA is the default.
+A device keeps one history even when its IP changes (see scripts/longevity_data.py).
 """
 
 import os
@@ -16,12 +17,11 @@ import streamlit as st
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "scripts"))
 from longevity_data import (  # noqa: E402
-    ALL_DEVICES_LABEL,
     CSV_PATH,
     build_device_options,
-    cpu_breakdown_long,
+    default_device_index,
     filter_by_days,
-    latest_snapshot,
+    latest_model,
     load_longevity_data,
 )
 
@@ -73,13 +73,13 @@ st.markdown("""
 
 
 @st.cache_data(show_spinner=False)
-def _load(csv_path: str, mtime: float) -> pd.DataFrame:
-    """Cached CSV load — invalidated whenever the file is modified."""
+def _load(csv_path: str, mtime: float, code_mtime: float) -> pd.DataFrame:
+    """Cached CSV load — invalidated when the CSV or the loader code changes."""
     return load_longevity_data(csv_path)
 
 
 _mtime = os.path.getmtime(CSV_PATH) if os.path.exists(CSV_PATH) else 0.0
-df = _load(CSV_PATH, _mtime)
+df = _load(CSV_PATH, _mtime, os.path.getmtime(load_longevity_data.__code__.co_filename))
 
 if df.empty:
     st.warning(
@@ -97,8 +97,8 @@ st.markdown(
 # ── Controls ──────────────────────────────────────────────────────────────────
 
 device_options = build_device_options(df)
-label_to_ip = {label: ip for label, ip in device_options}
-selector_labels = [ALL_DEVICES_LABEL] + list(label_to_ip.keys())
+label_to_key = {label: key for label, key in device_options}
+selector_labels = list(label_to_key.keys())
 
 RANGE_OPTIONS = {
     "Last 7 days": 7,
@@ -110,7 +110,8 @@ RANGE_OPTIONS = {
 ctrl1, ctrl2, ctrl3 = st.columns([3, 2, 1])
 with ctrl1:
     selected_label = st.selectbox(
-        "Select device to view data", selector_labels, index=0, key="lng_device"
+        "Select device to view data", selector_labels,
+        index=default_device_index(device_options), key="lng_device",
     )
 with ctrl2:
     range_label = st.selectbox(
@@ -124,9 +125,7 @@ with ctrl3:
 
 days = RANGE_OPTIONS[range_label]
 view_df = filter_by_days(df, days)
-
-if selected_label != ALL_DEVICES_LABEL:
-    view_df = view_df[view_df["IP"] == label_to_ip[selected_label]].copy()
+view_df = view_df[view_df["Device Key"] == label_to_key[selected_label]].copy()
 
 if view_df.empty:
     st.info("No records found for the selected device and date range.")
@@ -192,143 +191,48 @@ TABLE_COLUMNS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ALL DEVICES VIEW
+# DEVICE VIEW
 # ═══════════════════════════════════════════════════════════════════════════════
 
-if selected_label == ALL_DEVICES_LABEL:
-    snapshot = latest_snapshot(view_df)
-    unreachable = int(snapshot["Uptime (Days)"].isna().sum())
+latest = view_df.iloc[-1]
+model = latest_model(view_df)
 
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Devices Monitored", len(snapshot))
-    m2.metric("Records", len(view_df))
-    m3.metric(
-        "Avg RAM Usage",
-        f"{snapshot['RAM Usage (%)'].mean():.0f} %" if snapshot["RAM Usage (%)"].notna().any() else "—",
-    )
-    m4.metric("Unreachable (latest)", unreachable)
-
-    st.markdown("<div class='lng-section'>Latest Snapshot</div>", unsafe_allow_html=True)
-    snap_view = snapshot[[
-        "Device", "IP", "Model", "Date Label", "Uptime (Days)",
-        "RAM Usage (%)", "CPU Busy (%)",
-    ]].rename(columns={"Date Label": "Last Seen"})
-    st.dataframe(snap_view, width="stretch", hide_index=True)
-
-    st.markdown("<div class='lng-section'>Uptime (Days) — All Devices</div>", unsafe_allow_html=True)
-    _render(
-        _trend_chart(view_df, "Uptime (Days)", "Uptime (Days)", color_col="Device"),
-        "No uptime data in the selected range.",
-    )
-
-    st.markdown("<div class='lng-section'>RAM Usage (%) — All Devices</div>", unsafe_allow_html=True)
-    _render(
-        _trend_chart(view_df, "RAM Usage (%)", "RAM Usage (%)",
-                     color_col="Device", y_domain=[0, 100]),
-        "No memory data in the selected range.",
-    )
-
-    st.markdown("<div class='lng-section'>CPU Busy (%) — All Devices</div>", unsafe_allow_html=True)
-    _render(
-        _trend_chart(view_df, "CPU Busy (%)", "CPU Busy (%)",
-                     color_col="Device", y_domain=[0, 100]),
-        "No CPU data in the selected range.",
-    )
-
-    st.markdown("<div class='lng-section'>Latest RAM Usage by Device</div>", unsafe_allow_html=True)
-    bar_df = snapshot[["Device", "RAM Usage (%)"]].rename(
-        columns={"RAM Usage (%)": "Value"}
-    ).dropna(subset=["Value"])
-    if bar_df.empty:
-        st.info("No memory data available for the latest snapshot.")
-    else:
-        bar = (
-            alt.Chart(bar_df)
-            .mark_bar(cornerRadiusEnd=4)
-            .encode(
-                x=alt.X("Device:N", title="Device", sort="-y", axis=alt.Axis(labelAngle=-30)),
-                y=alt.Y("Value:Q", title="RAM Usage (%)", scale=alt.Scale(domain=[0, 100]),
-                        axis=VALUE_AXIS),
-                color=alt.Color("Device:N", legend=None),
-                tooltip=[alt.Tooltip("Device:N"), alt.Tooltip("Value:Q", title="RAM Usage (%)")],
-            )
-            .properties(height=300)
-        )
-        st.altair_chart(bar, width="stretch")
-
-    with st.expander("View raw records"):
-        st.dataframe(
-            view_df[TABLE_COLUMNS].rename(columns={"Date Label": "Date"}).iloc[::-1],
-            width="stretch",
-            hide_index=True,
-        )
+st.markdown(
+    f"<div class='lng-section'>{selected_label} &nbsp;·&nbsp; "
+    f"<span style='color:rgba(232,236,240,0.55); font-weight:500;'>"
+    f"{latest['IP']} &nbsp;|&nbsp; {model}</span></div>",
+    unsafe_allow_html=True,
+)
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SINGLE DEVICE VIEW
-# ═══════════════════════════════════════════════════════════════════════════════
+def _fmt(value, suffix=""):
+    return "—" if pd.isna(value) else f"{value:.0f}{suffix}"
 
-else:
-    latest = view_df.iloc[-1]
-    model = latest["Model"] if str(latest["Model"]).strip() else "Unknown"
 
-    st.markdown(
-        f"<div class='lng-section'>{selected_label} &nbsp;·&nbsp; "
-        f"<span style='color:rgba(232,236,240,0.55); font-weight:500;'>"
-        f"{latest['IP']} &nbsp;|&nbsp; {model}</span></div>",
-        unsafe_allow_html=True,
-    )
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("Uptime", _fmt(latest["Uptime (Days)"], " days"))
+m2.metric("RAM Usage", _fmt(latest["RAM Usage (%)"], " %"))
+m3.metric("CPU Busy", _fmt(latest["CPU Busy (%)"], " %"))
+m4.metric("Records", len(view_df))
 
-    def _fmt(value, suffix=""):
-        return "—" if pd.isna(value) else f"{value:.0f}{suffix}"
+if pd.isna(latest["Uptime (Days)"]):
+    st.error("Latest collection could not reach this device (login failed / no response).")
 
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Uptime", _fmt(latest["Uptime (Days)"], " days"))
-    m2.metric("RAM Usage", _fmt(latest["RAM Usage (%)"], " %"))
-    m3.metric("CPU Busy", _fmt(latest["CPU Busy (%)"], " %"))
-    m4.metric("Records", len(view_df))
+st.markdown("<div class='lng-section'>Uptime (Days)</div>", unsafe_allow_html=True)
+_render(
+    _trend_chart(view_df, "Uptime (Days)", "Uptime (Days)"),
+    "No uptime data in the selected range.",
+)
 
-    if pd.isna(latest["Uptime (Days)"]):
-        st.error("Latest collection could not reach this device (login failed / no response).")
+st.markdown("<div class='lng-section'>RAM Usage (%)</div>", unsafe_allow_html=True)
+_render(
+    _trend_chart(view_df, "RAM Usage (%)", "RAM Usage (%)", y_domain=[0, 100]),
+    "No memory data in the selected range.",
+)
 
-    st.markdown("<div class='lng-section'>Uptime (Days)</div>", unsafe_allow_html=True)
-    _render(
-        _trend_chart(view_df, "Uptime (Days)", "Uptime (Days)"),
-        "No uptime data in the selected range.",
-    )
-
-    st.markdown("<div class='lng-section'>RAM Usage (%)</div>", unsafe_allow_html=True)
-    _render(
-        _trend_chart(view_df, "RAM Usage (%)", "RAM Usage (%)", y_domain=[0, 100]),
-        "No memory data in the selected range.",
-    )
-
-    st.markdown("<div class='lng-section'>CPU Breakdown (%)</div>", unsafe_allow_html=True)
-    cpu_df = cpu_breakdown_long(view_df)
-    if cpu_df.empty:
-        st.info("No CPU data in the selected range.")
-    else:
-        cpu_chart = (
-            alt.Chart(cpu_df)
-            .mark_line(point=True, strokeWidth=2)
-            .encode(
-                x=alt.X("Date:T", title="Date", axis=DATE_AXIS),
-                y=alt.Y("Value:Q", title="CPU (%)", scale=alt.Scale(domain=[0, 100]),
-                        axis=VALUE_AXIS),
-                color=alt.Color("Metric:N", title="CPU Metric"),
-                tooltip=[
-                    alt.Tooltip("Date:T", title="Date", format="%d %b %Y"),
-                    alt.Tooltip("Metric:N", title="Metric"),
-                    alt.Tooltip("Value:Q", title="CPU (%)"),
-                ],
-            )
-            .properties(height=320)
-        )
-        st.altair_chart(cpu_chart, width="stretch")
-
-    st.markdown("<div class='lng-section'>Collected Records</div>", unsafe_allow_html=True)
-    st.dataframe(
-        view_df[TABLE_COLUMNS].rename(columns={"Date Label": "Date"}).iloc[::-1],
-        width="stretch",
-        hide_index=True,
-    )
+st.markdown("<div class='lng-section'>Collected Records</div>", unsafe_allow_html=True)
+st.dataframe(
+    view_df[TABLE_COLUMNS].rename(columns={"Date Label": "Date"}).iloc[::-1],
+    width="stretch",
+    hide_index=True,
+)

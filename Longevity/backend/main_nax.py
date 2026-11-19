@@ -13,7 +13,11 @@ Device selection:
 
 CSV layout (appended, header written once):
     Timestamp,IP,Model,Uptime (Days),RAM Usage (%),User CPU (%),System CPU (%),
-    Nice CPU (%),Idle CPU (%),IO CPU (%),IRQ CPU (%),SIRQ CPU (%)
+    Nice CPU (%),Idle CPU (%),IO CPU (%),IRQ CPU (%),SIRQ CPU (%),Device ID
+
+    Device ID is "<model section>/<device id>" from Nax_Devices.json so the
+    dashboard keeps one history per device even when its IP changes. Older
+    files without that column are upgraded in place.
 
 Usage (Jenkins scheduled job):
     python main_nax.py --recipients "a@crestron.com,b@crestron.com"
@@ -39,7 +43,7 @@ import os
 import re
 import smtplib
 import sys
-from csv import writer
+from csv import reader, writer
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -52,7 +56,7 @@ import ssh  # noqa: E402
 CSV_COLUMNS = [
     "Timestamp", "IP", "Model", "Uptime (Days)", "RAM Usage (%)",
     "User CPU (%)", "System CPU (%)", "Nice CPU (%)", "Idle CPU (%)",
-    "IO CPU (%)", "IRQ CPU (%)", "SIRQ CPU (%)",
+    "IO CPU (%)", "IRQ CPU (%)", "SIRQ CPU (%)", "Device ID",
 ]
 
 DEFAULT_CSV_PATH = os.getenv("NAX_LONGEVITY_CSV", r"C:\runData_BTIO\event.csv")
@@ -84,7 +88,7 @@ def resolve_json_path(explicit_path=None):
     candidates = [
         explicit_path,
         os.getenv("NAX_JSON_PATH"),
-        r"C:\NAX-FRAMEWORK\DM_NAX\src\TestData\Nax_Devices.json",
+        r"C:\NAX-FRAMEWORK-U20\DM_NAX\src\TestData\Nax_Devices.json",
         os.path.join(base_dir, "..", "..", "Nax_Devices.json"),
         os.path.join(base_dir, "..", "..", "..", "TestData", "Nax_Devices.json"),
     ]
@@ -211,6 +215,7 @@ def collect_device_health(device, timeout):
 
     data = {
         "ip": ip,
+        "config_id": device["config_id"],
         "version": "Unknown",
         "model": "Unknown",
         "uptime_days": NA,
@@ -261,27 +266,45 @@ def collect_device_health(device, timeout):
 
 # ── CSV output ────────────────────────────────────────────────────────────────
 
+def ensure_csv_header(csv_path):
+    """Create the CSV with the current header, or rewrite an older/missing header in place."""
+    if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer(f).writerow(CSV_COLUMNS)
+        return
+
+    with open(csv_path, "r", newline="", encoding="utf-8-sig") as f:
+        rows = list(reader(f))
+    header = [c.strip() for c in rows[0]] if rows else []
+    # Older collector versions appended a header line mid-file on every run; drop those.
+    data_rows = [r for r in rows if r and r[0].lstrip("\ufeff").strip().lower() != "timestamp"]
+    if header == CSV_COLUMNS and len(data_rows) == sum(1 for r in rows[1:] if r):
+        return
+
+    width = len(CSV_COLUMNS)
+    tmp_path = csv_path + ".tmp"
+    with open(tmp_path, "w", newline="", encoding="utf-8") as f:
+        csv_writer = writer(f)
+        csv_writer.writerow(CSV_COLUMNS)
+        for row in data_rows:
+            if row:
+                csv_writer.writerow((row + [""] * width)[:width])
+    os.replace(tmp_path, csv_path)
+    print(f"Upgraded CSV header in {csv_path}")
+
+
 def append_to_csv(csv_path, rows):
-    """Append one row per device, writing the header for a new/empty file."""
+    """Append one row per device, making sure the file has the current header."""
     directory = os.path.dirname(os.path.abspath(csv_path))
     if directory:
         os.makedirs(directory, exist_ok=True)
 
-    needs_header = (not os.path.exists(csv_path)) or os.path.getsize(csv_path) == 0
-    if not needs_header:
-        try:
-            with open(csv_path, "r", encoding="utf-8-sig") as f:
-                first_line = f.readline().strip()
-            needs_header = not first_line.lower().startswith("timestamp")
-        except OSError:
-            needs_header = False
+    ensure_csv_header(csv_path)
 
     timestamp = datetime.now().strftime("%m-%d")
 
     with open(csv_path, "a", newline="", encoding="utf-8") as f_object:
         csv_writer = writer(f_object)
-        if needs_header:
-            csv_writer.writerow(CSV_COLUMNS)
         for data in rows:
             cpu = data["cpu"]
             csv_writer.writerow([
@@ -292,6 +315,7 @@ def append_to_csv(csv_path, rows):
                 data["memory"],
                 cpu["usr"], cpu["sys"], cpu["nic"], cpu["idle"],
                 cpu["io"], cpu["irq"], cpu["sirq"],
+                data["config_id"],
             ])
 
     print(f"\nAppended {len(rows)} row(s) to {csv_path}")
